@@ -68,17 +68,20 @@ int main() {
     for (i = 0; i < NUM_MESSAGES; i++) {
         result = read(pollfds[0].fd, readBuf, sizeof(struct EcapData));
         struct EcapData *data = (struct EcapData *) readBuf;
-        for(int j = 0; j < 8; j++) {
-            uint32_t cap1 = data->cap1[j];
-            uint32_t cap2 = data->cap2[j];
-            uint32_t cap3 = data->cap3[j];
-            uint32_t cap4 = data->cap4[j];
-//            cap1 = ((cap1 & 0xFFFF) << 15) | (cap1 >> 15);
-//            cap2 = ((cap2 & 0xFFFF) << 15) | (cap2 >> 15);
-//            cap3 = ((cap3 & 0xFFFF) << 15) | (cap3 >> 15);
-//            cap4 = ((cap4 & 0xFFFF) << 15) | (cap4 >> 15);
-            if (result > 0)
-                    printf("Message received from PRU:%s, %lu, %lu, %lu, %lu\n", data->cmd, (unsigned long)cap1/200, (unsigned long)cap2/200, (unsigned long)cap3/200, (unsigned long)cap4/200);
+        if (result > 0) {
+            printf("Message received from PRU:%s \n",data->cmd);
+            uint32_t cap1 = 0;
+            uint32_t cap2 = 0;
+            uint32_t cap3 = 0;
+            uint32_t cap4 = 0;
+            for(int j = 0; j < 8; j++) {
+                cap1 = data->cap1[j];
+                cap2 = data->cap2[j];
+                cap3 = data->cap3[j];
+                cap4 = data->cap4[j];
+                printf("%lu, %lu, %lu, %lu, ", (unsigned long)cap1/200, (unsigned long)cap2/200, (unsigned long)cap3/200, (unsigned long)cap4/200);
+            }
+            printf("\n");
         }
     }
 
